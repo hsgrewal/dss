@@ -1,8 +1,3 @@
-#library(dplyr)
-#library(ggplot2)
-#library(scales)
-#library(data.table)
-
 # Load Data
 # Since data loading is slow, only load data if not loaded already
 if(!exists("NEI")){
@@ -12,8 +7,10 @@ if(!exists("SCC")){
   SCC <- readRDS("Source_Classification_Code.rds")
 }
 
+# sum total emissions per year
 data <- aggregate(Emissions ~ year, NEI, sum)
 
+# Plot
 png('plot1.png')
 barplot(
   data$Emissions,
