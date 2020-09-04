@@ -18,7 +18,7 @@ data <- aggregate(Emissions ~ year + type, baltMD, sum)
 png('plot3.png', width = 960)
 g <- ggplot(data, aes(factor(year), Emissions, fill = type)) +
   geom_bar(stat = 'identity') + facet_grid(rows = .~type) +
-  labs(x='Year', y=expression('Total PM2.5 Emissions')) +
+  labs(x='Year', y='Total PM2.5 Emissions') +
   labs(title='Total PM2.5 Emissions from Baltimore City, Maryland by Year and Type') +
   scale_fill_discrete(name='Type') +
   theme(plot.title = element_text(hjust = 0.5))
