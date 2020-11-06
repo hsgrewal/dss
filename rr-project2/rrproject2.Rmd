@@ -1,0 +1,107 @@
+---
+title: "Impact of Severe Weather Events in the US using NOAA Storm Data"
+author: "Harkishan Grewal"
+date: "10/6/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Synopsis
+The goal of the assignment is to explore the NOAA Storm Database and explore the effects of severe weather events on both the population and economy.
+
+The analysis aims to investigate which severe weather events are most harmful on the population's health in respect of general injuries and fatalities. Further the economic consequences will be analyzed by exploring the financial damage done to both general property and agriculture.
+
+After the analysis, it is concluded that *Tornadoes* are most harmful to the population while *Floods* cause the most economic damage.
+
+## Data Processing
+Load the libraries used of analysis.
+```{r}
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+```
+
+Download and read the dataset.
+```{r cache=TRUE}
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2", "data.csv.bz2")
+rawData <- read.csv("data.csv.bz2")
+rawData <- rawData %>% group_by(EVTYPE) 
+```
+
+Summarize the relevant variables (Fatalities, INJURIES, and PROPDMG) to make it easier to plot them. Also filters out the data points to remove some of the "noise"" (insignificantly small values) to make the plot more readable.
+```{r}
+summarizedData <- rawData %>% group_by(EVTYPE) %>% summarise(totalFatalities = sum(FATALITIES), totalInjuries = sum(INJURIES))
+humanDamageData <- summarizedData %>% filter(totalFatalities>10, totalInjuries>10)
+```
+
+Estimate the total damage to human health as a function of the totalFatilities and totalInjuries. I chose to weight them such that a fatality is worth twice as much as an injury.
+```{r}
+humanDamageData <- humanDamageData %>% mutate(totalHumanDamage = 2*totalFatalities + totalInjuries) %>% 
+  arrange(desc(totalHumanDamage))
+```
+
+Calculate the total property and crop damage using the PROPDMGEXP column before filtering data points with low values to make the plot more readable.
+```{r}
+propDamageData <- rawData %>% mutate(completePropDamage = ifelse(tolower(PROPDMGEXP)=="k",PROPDMG*1000,ifelse(tolower(PROPDMGEXP)=="m", PROPDMG*1000000, ifelse(tolower(PROPDMGEXP)=="b",PROPDMG*1000000000,PROPDMG)))) %>%
+  mutate(completeCropDamage = ifelse(tolower(CROPDMGEXP)=="k",CROPDMG*1000,ifelse(tolower(CROPDMGEXP)=="m", CROPDMG*1000000, ifelse(tolower(CROPDMGEXP)=="b",CROPDMG*1000000000,CROPDMG)))) %>%
+  select(EVTYPE, completePropDamage, completeCropDamage) %>%
+  mutate(totalDamage=completePropDamage+completeCropDamage) %>%
+  filter(completePropDamage>1000000, completeCropDamage>1000000) 
+propDamageData <- propDamageData %>% group_by(EVTYPE) %>%
+  summarise(totalPropDamage=sum(completePropDamage), totalCropDamage=sum(completeCropDamage), totalDamage=sum(totalDamage))
+```
+
+## Results
+
+#### Damage to Human Life
+
+Plot only the fatality and injury data to help visualize overall trends.
+```{r}
+## Melts the data to make it a long dataset (which can be plotted in ggplot2)
+fatalityAndInjuryData <- melt(humanDamageData %>% select(EVTYPE, totalFatalities, totalInjuries), id="EVTYPE")
+g <- ggplot(fatalityAndInjuryData, aes(EVTYPE, value)) +
+  facet_grid(variable~., scales="free") +
+  geom_point() +
+  theme(axis.text.x = element_text(angle=90, hjust=1)) +
+  ggtitle("Total number of fatalities and injuries for different events")
+print(g)
+```
+
+Plot the calculated metric for total human health damage. This helps to visualize the data from the 2 earlier plots and any trends between them.
+```{r}
+g <- ggplot(humanDamageData, aes(EVTYPE, totalHumanDamage)) +
+  geom_point() + 
+  theme(axis.text.x = element_text(angle=90, hjust=1)) +
+  ggtitle("Total human damage for different \nevents (based on the earlier calculated metric)")
+print(g)
+```
+
+Display the 10 events which are most damaging to human health to help inform any decision making (by providing precise information)
+```{r}
+head(arrange(humanDamageData, desc(totalHumanDamage)), 10)
+```
+
+#### Property Damage
+
+Plot the property and crop damage data side by side to help visualize overall trends.
+```{r}
+##Melts the data to make it a long dataset (which can be plotted in ggplot2)
+meltedDamageData <- melt(propDamageData %>% select(-totalDamage), id="EVTYPE")
+g <- ggplot(meltedDamageData, aes(EVTYPE, value)) +
+  facet_grid(variable~., scales="free") +
+  geom_point() +
+  theme(axis.text.x = element_text(angle=90, hjust=1)) +
+  ggtitle("Total property and crop damage for different events")
+print(g)
+```
+
+Display the 10 events which cause the most overall financial impact to help inform any decision making (by providing precise information)
+```{r}
+head(arrange(propDamageData, desc(totalDamage), desc(totalPropDamage), desc(totalCropDamage)),10)
+```
+
+## Conclusion
+ Based on the analysis conducted, it can be concluded that **Tornadoes** cause the most damage to the population in the US based on the number of annual fatalities and injuries. It can also be concluded that the **Floods** and flood-related events (Flash floods, flooding, flash flooding) cause the most economic damage in terms of dollars in damage to property and agriculture. The total damage to property from floods was \$120 billion and damage to agriculture was \$5 billion.
