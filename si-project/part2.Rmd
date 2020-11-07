@@ -1,0 +1,90 @@
+---
+title: "Basic Inferential Data Analysis"
+subtitle: "Statistical Inference Course Project: Part 2"
+author: "Harkishan Grewal"
+date: "11/05/2020"
+output: pdf_document
+---
+
+## Overview
+
+Analyze the *ToothGrowth* data in the R datasets package.
+
+1. Load the *ToothGrowth* data and perform some basic exploratory data analyses
+2. Provide a basic summary of the data
+3. Use confidence intervals and/or hypothesis tests to compare tooth growth by 
+supp and dose
+4. State conclusions and assumptions needed for the conclusions
+
+
+## Analysis
+
+```{r, echo=FALSE}
+library("ggplot2")
+```
+
+### *ToothGrowth* data
+```{r}
+# Load the ToothGrowth data
+data("ToothGrowth")
+str(ToothGrowth)
+```
+
+
+#### Description
+
+The response is the length of odontoblasts (cells responsible for tooth growth) 
+in 60 guinea pigs. Each animal received one of three dose levels of vitamin C 
+(0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic 
+acid (a form of vitamin C and coded as VC).
+
+### Basic Summary
+```{r}
+summary(ToothGrowth)
+```
+
+```{r}
+g <- ggplot(ToothGrowth, aes(x = factor(dose), y = len)) 
+g <- g + geom_boxplot(aes(fill = factor(dose)))
+g <- g + facet_grid(. ~ supp)
+g <- g + ggtitle("Dose Amount vs Tooth Length")
+g <- g + xlab("Dose Amount") + ylab("Length")
+g
+```
+
+### Hypothesis Test
+
+Now tooth growth by supplement using a t-test will be compared.
+
+```{r}
+t.test(len ~ supp, ToothGrowth)
+```
+
+The p-value of this test was 0.06063.
+
+Since the p-value is greater than 0.05 and the confidence interval of the test 
+contains zero, it can be concluded that supplement types seem to have no 
+impact on tooth growth based on this test.
+
+Now a comparison of tooth growth by dose will be done, looking at the 
+different pairs of dose values.
+
+```{r}
+t.test(len ~ dose, ToothGrowth[ToothGrowth$dose %in% c(0.5, 1), ])
+```
+
+```{r}
+t.test(len ~ dose, ToothGrowth[ToothGrowth$dose %in% c(1, 2), ])
+```
+
+The p-value of each test was essentially zero and the confidence interval of 
+each test does not cross over zero.
+
+Based on this result, it can be assumed that the average tooth length increases 
+with an increasing dose, and therefore the null hypothesis can be rejected.
+
+### Conclusions and Assumptions
+
+Based on the t-test analysis, it can be concluded that supplement 
+type has no effect on tooth growth, and increasing the dose level leads to 
+increased tooth growth.
