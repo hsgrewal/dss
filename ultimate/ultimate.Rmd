@@ -24,4 +24,6 @@ map %>%
    addMarkers(lat=34.2142480, lng=-119.0273520, popup = popup)
 ```
 
+
+## Wednesday, January 6, 2021 at 1800
 ![The League](./league.jpg)
