@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Source Code
 
-The source code for this assignment is available on [GitHub](https://github.com/hsgrewal/dss).
+The source code for this assignment is available on [GitHub](https://github.com/hsgrewal/dss/tree/master/data-product2).
 
 ## CSUF - Leaflet Map
 
