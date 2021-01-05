@@ -1,0 +1,44 @@
+---
+title: "CSUF - Leaflet Map"
+author: "Harkishan Grewal"
+date: "1/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Source Code
+
+The source code for this assignment is available on [GitHub](https://github.com/hsgrewal/dss).
+
+## CSUF - Leaflet Map
+
+Create a leaflet map object.
+
+```{r}
+library(leaflet)
+map <- leaflet() %>% addTiles()
+```
+
+Create a marker with a picture of California State University, Fullerton and a 
+link to its homepage.
+
+```{r}
+csufIcon <- makeIcon(
+   iconUrl = "http://brand.fullerton.edu/_resources/images/samples/csuf-seal.png",
+   iconWidth = 30*400, iconHeight = 30,
+   iconAnchorX = 30*400, iconAnchorY = 30
+)
+```
+
+Add the marker to the map and display the map.
+
+```{r}
+csufPopup <- c("<a href= 'http://www.fullerton.edu/' >CSUF<br><img src='http://brand.fullerton.edu/_resources/images/samples/csuf-seal.png' width='50' height='50'  alt='California State University, Fullerton' title='Go Titans'></a>")
+
+map %>%
+   addTiles() %>%
+   addMarkers(lat=33.88036981378208, lng=-117.88538601662415, popup = csufPopup)
+```
