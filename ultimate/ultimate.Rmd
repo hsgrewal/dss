@@ -26,4 +26,8 @@ map %>%
 
 
 ## Wednesday, January 6, 2021 at 1800
-![The League](./league.jpg)
+
+## Carrying the team
+![](./carry-team.jpeg)
+
+![](./league.jpg)
