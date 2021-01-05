@@ -1,0 +1,27 @@
+---
+title: "USA Ultimate League"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(leaflet)
+
+# icon <- makeIcon(
+   # iconUrl = "https://usaultimate.org/wp-content/uploads/2019/11/usau-ultimate-logo.svg",
+   # iconWidth = 30*400, iconHeight = 30,
+   # iconAnchorX = 30*400, iconAnchorY = 30
+# )
+
+popup <- c("<a href= 'https://usaultimate.org/rules/' >Rules<br><img src='https://usaultimate.org/wp-content/uploads/2019/11/usau-ultimate-logo.svg' width='50' height='50'  alt='USA Ultimate' title='Let's Go!'></a>")
+
+map <- leaflet() %>% addTiles()
+map %>%
+   addTiles() %>%
+   addMarkers(lat=34.2142480, lng=-119.0273520, popup = popup)
+```
+
+![The League](./league.jpg)
