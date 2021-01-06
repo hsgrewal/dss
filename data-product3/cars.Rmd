@@ -1,0 +1,30 @@
+---
+title: "Cars"
+author: "Harkishan Grewal"
+date: "1/5/2021"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Gas Mileage
+
+Show the relationship between gas mileage (`mpg`) and other factors using 
+`mtcars` dataset.
+
+Plot weight (`wt`) vs. mileage (`mpg`) with the number of cylinders (`cyl`) as 
+colors and the amount of horsepower (`hp`) as the size of an individual point 
+in the plot.
+
+## Visualizing the Data
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(plotly)
+plot_ly(data = mtcars, x = ~wt, y = ~mpg, 
+        color = ~as.factor(cyl), size = ~hp,
+        text = ~paste("Weight: ", wt, '<br>MPG:', mpg),
+        type = "scatter", mode = "markers") %>%
+  layout(title = "Cars")
+```
