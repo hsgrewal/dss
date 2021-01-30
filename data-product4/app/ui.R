@@ -55,7 +55,7 @@ shinyUI(
         ),
         tabPanel("GitHub",
             h4("Link back to GitHub Repo containing Source Code"),
-            a("https://github.com/hsgrewal/dss/tree/master/data-product4")
+            a("https://github.com/hsgrewal/dss/tree/master/data-product4/app")
         )
     )
 )
