@@ -40,3 +40,6 @@ vignettes/*.pdf
 
 # R Studio Connect
 rsconnect/
+
+# Capstone Data
+capstone/data/
