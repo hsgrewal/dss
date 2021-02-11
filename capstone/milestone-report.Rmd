@@ -1,0 +1,12 @@
+---
+title: "Coursera DSS Capstone - Milestone Report"
+subtitle: "Exploratory Analysis of SwiftKey Data"
+author: "Harkishan Grewal"
+date: "February 10, 2021"
+output: html_document
+---
+
+## Synopsis
+
+This is the milestone report for week 2 of the Coursera Data Science Capstone
+project.
